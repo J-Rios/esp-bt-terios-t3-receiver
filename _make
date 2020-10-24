@@ -1,0 +1,25 @@
+#!/bin/bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+export IDF_TARGET="esp32"
+export IDF_PATH="${DIR}/esp-idf"
+export IDF_TOOLCHAIN="${DIR}/toolchain-xtensa32"
+export PATH="${PATH}:${IDF_TOOLCHAIN}/bin/"
+export PATH="${PATH}:${IDF_PATH}/tools/"
+export PATH="${PATH}:${IDF_PATH}/"
+
+cd $DIR/btstack/port/esp32
+rm -rf "${IDF_PATH}/components/btstack"
+python ./integrate_btstack.py
+cd $DIR
+echo ""
+
+make $1
+
+echo ""
+echo "Removing BTstack component from ${IDF_PATH}/components"
+rm -rf "${IDF_PATH}/components/btstack"
+echo ""
+
+exit 0

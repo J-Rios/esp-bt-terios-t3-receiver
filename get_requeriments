@@ -1,0 +1,27 @@
+
+echo ""
+echo "------------------------------"
+echo "Getting xtensa toolchain..."
+echo "------------------------------"
+#wget http://dl.platformio.org/packages/toolchain-xtensa32-linux_x86_64-2.80200.200827.tar.gz # For IDF v4
+wget http://dl.platformio.org/packages/toolchain-xtensa32-linux_x86_64-2.50200.80.tar.gz
+mkdir -p toolchain-xtensa32
+tar -xvf toolchain-xtensa32-*.tar.gz -C ./toolchain-xtensa32
+rm -f toolchain-xtensa32-*.tar.gz
+echo ""
+
+echo ""
+echo "------------------------------"
+echo "Getting ESP-IDF..."
+echo "------------------------------"
+git clone -b v3.3 --recursive https://github.com/espressif/esp-idf.git
+echo ""
+
+echo ""
+echo "------------------------------"
+echo "Getting BTStack..."
+echo "------------------------------"
+git clone -b v1.1 --recursive git@github.com:bluekitchen/btstack.git
+echo ""
+
+exit 0
