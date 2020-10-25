@@ -1,6 +1,10 @@
 
 #include "gamepad_manager.h"
 #include "terios_t3.h"
+#include "car.h"
+
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 
 #include <stdio.h>
 
@@ -140,6 +144,8 @@ void parse_hid_to_gamepad(uint8_t* hid_report_data, t_gamepad* gamepad)
 void gamepad_handler(uint8_t* hid_report_data, const uint16_t report_len)
 {
     static t_gamepad gamepad;
+    static Car BTCar;
+    static uint8_t pad_mode = 0;
 
     // Check for expected report size and start bytes
     if(report_len != 12)
@@ -150,4 +156,46 @@ void gamepad_handler(uint8_t* hid_report_data, const uint16_t report_len)
     parse_hid_to_gamepad(hid_report_data, &gamepad);
 
     show_gamepad_state(&gamepad);
+
+    // Set Move mode
+    if(gamepad.key.start || gamepad.key.select)
+    {
+        pad_mode = !pad_mode;
+        vTaskDelay(500/portTICK_PERIOD_MS);
+    }
+
+    // Car movement
+    if(pad_mode == 0)
+    {
+        if(gamepad.apad_left.y >= 160)
+            BTCar.move(BACKWARD);
+        else if(gamepad.apad_left.y <= 96)
+            BTCar.move(FORWARD);
+        else
+            BTCar.move(STOP);
+        
+        if(gamepad.apad_left.x >= 160)
+            BTCar.turn(RIGHT);
+        else if(gamepad.apad_left.x <= 96)
+            BTCar.turn(LEFT);
+        else
+            BTCar.turn(STOP);
+    }
+    else
+    {
+        if(gamepad.apad_left.y >= 160)
+            BTCar.move(BACKWARD);
+        else if(gamepad.apad_left.y <= 96)
+            BTCar.move(FORWARD);
+        else
+            BTCar.move(STOP);
+        
+        if(gamepad.apad_right.x >= 160)
+            BTCar.turn(RIGHT);
+        else if(gamepad.apad_right.x <= 96)
+            BTCar.turn(LEFT);
+        else
+            BTCar.turn(STOP);
+    }
+    
 }

@@ -1,8 +1,11 @@
 
 #define BTSTACK_FILE__ "hid_host_demo.c"
 
-#include "config.h"
 #include "bt_manager.h"
+
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "sdkconfig.h"
 
 /*************************************************************************************************/
 
